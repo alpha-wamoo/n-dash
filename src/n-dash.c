@@ -7,6 +7,26 @@ int main(int argc, char **argv){
         return 1;
     }
 
-    printf("result: %d\n", atoi(argv[1]));
-    return 0;
+    char *p = argv[1];
+    printf(".intel_syntax noprefix\n");
+    printf(".globl main\n");
+    printf("main:\n");
+    printf("    mov rax, %ld\n", strtol(p, &p, 10));
+    while(*p){
+        if(*p == '+'){
+            p++;
+            printf("    add rax, %ld\n", strtol(p, &p, 10));
+            continue;
+        } else if(*p == '-'){
+            p++;
+            printf("    sub rax, %ld\n", strtol(p, &p, 10));
+            continue;
+        }
+
+        fprintf(stderr, "unexpected character: %c\n", *p);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("  ret\n");
+    exit(EXIT_SUCCESS);
 }
